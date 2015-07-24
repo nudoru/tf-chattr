@@ -71,35 +71,30 @@ BEGIN Templates for Sub Views
 
 <script id="template__default" type="text/template">
     <div class="grid__12-container">
-        <div class="grid__row padding-bottom-double">
-            <div class="grid__col-8">
+        <div class="grid__row">
+            <div class="grid__col-9">
                 <div class="panel panel__border panel__shadow">
                     <div class="panel__header">
                         <h1>Discussion</h1>
                     </div>
-                    <ul class="list-plain">
-                        <li>Message</li>
-                        <li>Message</li>
-                        <li>Message</li>
-                        <li>Message</li>
-                        <li>Message</li>
-                    </ul>
+                    <div id="discussion">
+                        <ul id="discussion__list">
+                            <li><em>Username</em>Message</li>
+                            <li><em>Username</em>Message</li>
+                        </ul>
+                    </div>
                     <div class="panel__footer">
                         <input id="message-input" type="text" placeholder="What say ye?">
                         <button class="button-success button__icon-left"><i class="fa fa-comment"></i>Chat It!</button>
                     </div>
                 </div>
-
             </div>
-            <div class="grid__col-4">
+            <div class="grid__col-3">
                 <div class="panel panel__border panel__shadow">
                     <div class="panel__header">
                         <h1>Connected Users</h1>
                     </div>
-                    <ul class="list-plain">
-                        <li>User</li>
-                        <li>User</li>
-                        <li>User</li>
+                    <ul id="users__list">
                         <li>User</li>
                     </ul>
                 </div>
@@ -107,13 +102,18 @@ BEGIN Templates for Sub Views
                     <div class="panel__header">
                         <h1>Settings</h1>
                     </div>
-                    <label for="nick-input">Your nick
-                        <input id="nick-input" type="text" placeholder="Nick">
-                    </label>
+                    <input id="nick-input" type="text" placeholder="Your nick">
                 </div>
             </div>
         </div>
     </div>
+</script>
+
+<script id="template__discussion-list" type="text/template">
+    <ul id="discussion__list">
+        <li><em>Username</em>Message</li>
+        <li><em>Username</em>Message</li>
+    </ul>
 </script>
 
 <!--
