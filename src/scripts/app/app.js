@@ -18,10 +18,12 @@ define('APP.Application',
 
       // Could wait for model initialization to complete
       this.view().removeLoadingMessage();
-      this.view().render();
 
       // Start it with the route in the URL
       this.setCurrentRoute(APP.router().getCurrentRoute());
+
+      // moved down because default view is the app view
+      this.view().render();
     }
 
     //----------------------------------------------------------------------------

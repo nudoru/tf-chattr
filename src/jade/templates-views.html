@@ -10,8 +10,8 @@ BEGIN Templates for Sub Views
                     <div class="panel__header">
                         <h1>Discussion</h1>
                     </div>
-                    <div id="discussion">
-                        <ul id="discussion__list">
+                    <div id="message">
+                        <ul id="message__list">
                             <li><em>Username</em>Message</li>
                             <li><em>Username</em>Message</li>
                         </ul>
@@ -27,9 +27,11 @@ BEGIN Templates for Sub Views
                     <div class="panel__header">
                         <h1>Connected Users</h1>
                     </div>
-                    <ul id="users__list">
-                        <li>User</li>
-                    </ul>
+                    <div id="users">
+                        <ul id="users__list">
+                            <li>User</li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="panel panel__border panel__shadow">
                     <div class="panel__header">
@@ -42,10 +44,15 @@ BEGIN Templates for Sub Views
     </div>
 </script>
 
-<script id="template__discussion-list" type="text/template">
+<script id="template__user-list" type="text/template">
+    <ul id="users__list">
+        <li>Userzzz</li>
+    </ul>
+</script>
+
+<script id="template__message-list" type="text/template">
     <ul id="discussion__list">
-        <li><em>Username</em>Message</li>
-        <li><em>Username</em>Message</li>
+        <li><em>Usernamezz</em>Messagezz</li>
     </ul>
 </script>
 

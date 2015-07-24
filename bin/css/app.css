@@ -2649,7 +2649,7 @@ hr {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.list-plain, .list-plain-horizontal, .list-comma-separated, .app__header-nav, #users__list, #discussion__list {
+.list-plain, .list-plain-horizontal, .list-comma-separated, .app__header-nav, #users__list, #message__list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -4166,25 +4166,25 @@ body {
   box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
 }
 
-#discussion {
+#message {
   height: 500px;
   overflow-y: scroll;
 }
 
-#discussion__list li {
+#message__list li {
   color: #005eb8;
   margin-bottom: 0.618rem;
   padding-bottom: 0.618rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
-#discussion__list li em {
+#message__list li em {
   font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: 300;
   color: #968c83;
   margin-right: 0.618rem;
 }
-#discussion__list li em::after {
+#message__list li em::after {
   content: ":";
 }
 

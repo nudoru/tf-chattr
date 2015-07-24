@@ -18,10 +18,12 @@ define('APP.Application',
 
       // Could wait for model initialization to complete
       this.view().removeLoadingMessage();
-      this.view().render();
 
       // Start it with the route in the URL
       this.setCurrentRoute(APP.router().getCurrentRoute());
+
+      // moved down because default view is the app view
+      this.view().render();
     }
 
     //----------------------------------------------------------------------------
@@ -35,6 +37,8 @@ define('APP.Application',
 
     var _self,
         _appEvents  = require('Nori.Events.AppEventCreator'),
+        _usersCollection,
+        _messagesCollection,
         _dispatcher = require('Nori.Utils.Dispatcher');
 
     //----------------------------------------------------------------------------
@@ -43,7 +47,23 @@ define('APP.Application',
 
     function initialize() {
       _self = this;
+
+      _usersCollection = _self.createMapCollection({id:'UsersCollection'});
+      _messagesCollection = _self.createMapCollection({id:'MessagesCollection'});
+
       _appEvents.applicationModelInitialized();
+    }
+
+    function addUser(username) {
+
+    }
+
+    function removeUser(username) {
+
+    }
+
+    function addMessage(username,message) {
+
     }
 
     //----------------------------------------------------------------------------
@@ -64,6 +84,9 @@ define('APP.Application',
     //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
+    exports.addUser = addUser;
+    exports.removeUser = removeUser;
+    exports.addMessage = addMessage;
   });
 ;define('APP.View.AppSubView',
   function (require, module, exports) {
@@ -110,13 +133,18 @@ define('APP.Application',
   function (require, module, exports) {
 
     var _self,
-        _appEvents = require('Nori.Events.AppEventCreator');
+        _appEvents = require('Nori.Events.AppEventCreator'),
+        _dispatcher            = require('Nori.Utils.Dispatcher'),
+        _appEventConstants     = require('Nori.Events.AppEventConstants'),
+        _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     function initialize() {
       _self = this;
 
-      _self.initializeApplicationView(['applicationscaffold','applicationcomponentsscaffold']);
+      _self.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
       _self.setRouteViewMountPoint('#contents');
+
+      configureApplicationViewEvents();
 
       APP.mapRouteView('/', 'default', 'APP.View.AppSubView');
 
@@ -129,7 +157,32 @@ define('APP.Application',
     }
 
     function render() {
-      // implement
+      _self.setEvents({
+        'change #nick-input'   : handleNickInputChange,
+        'change #message-input': handleMessageInputChange
+      });
+      _self.delegateEvents();
+
+      _self.mapView('user-list', 'APP.View.UserList', false, '#users')
+      _self.mapView('message-list', 'APP.View.MessageList', false, '#message')
+    }
+
+    function handleNickInputChange(e) {
+      console.log('nickinput', e.target.value);
+    }
+
+    function handleMessageInputChange(e) {
+      console.log('mesageinput', e.target.value);
+    }
+
+    function configureApplicationViewEvents() {
+      _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function (payload) {
+        _self.notify(payload.payload.message, payload.payload.title, payload.payload.type);
+      });
+
+      _dispatcher.subscribe(_appEventConstants.ALERT_USER, function (payload) {
+        _self.alert(payload.payload.message, payload.payload.title);
+      });
     }
 
     exports.initialize = initialize;
@@ -282,6 +335,88 @@ define('APP.Application',
     exports.initialize   = initialize;
     exports.viewDidMount = viewDidMount;
 
+  });;define('APP.View.MessageList',
+  function (require, module, exports) {
+
+    function initialize(initObj) {
+      if(!this.isInitialized()) {
+        // associate with stores
+
+        this.initializeSubView(initObj);
+      }
+    }
+
+    function viewWillUpdate() {
+      // Update state from stores
+    }
+
+    // Example of custom render
+    //function render() {
+    //  this.viewWillRender();
+    //  this.setHTML(this.getTemplate()(this.getState()));
+    //  // created in mount this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
+    //  this.viewDidRender();
+    //}
+
+    //function viewDidMount() {
+    //  // good place to assign events or post render
+    //}
+    //
+    //function viewWillUnmount() {
+    //  // remove events
+    //}
+
+    exports.initialize = initialize;
+    exports.viewWillUpdate = viewWillUpdate;
+
+    //exports.viewDidUpdate = viewDidUpdate;
+    //exports.viewWillRender = viewWillRender;
+    //exports.viewDidRender = viewDidRender;
+    //exports.viewWillMount = viewWillMount;
+    //exports.viewDidMount = viewDidMount;
+    //exports.viewWillUnmount = viewWillUnmount;
+    //exports.viewDidUnmount = viewDidUnmount;
+  });;define('APP.View.UserList',
+  function (require, module, exports) {
+
+    function initialize(initObj) {
+      if(!this.isInitialized()) {
+        // associate with stores
+        console.log('user list');
+        this.initializeSubView(initObj);
+      }
+    }
+
+    function viewWillUpdate() {
+      // Update state from stores
+    }
+
+    // Example of custom render
+    //function render() {
+    //  this.viewWillRender();
+    //  this.setHTML(this.getTemplate()(this.getState()));
+    //  // created in mount this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
+    //  this.viewDidRender();
+    //}
+
+    //function viewDidMount() {
+    //  // good place to assign events or post render
+    //}
+    //
+    //function viewWillUnmount() {
+    //  // remove events
+    //}
+
+    exports.initialize = initialize;
+    exports.viewWillUpdate = viewWillUpdate;
+
+    //exports.viewDidUpdate = viewDidUpdate;
+    //exports.viewWillRender = viewWillRender;
+    //exports.viewDidRender = viewDidRender;
+    //exports.viewWillMount = viewWillMount;
+    //exports.viewDidMount = viewDidMount;
+    //exports.viewWillUnmount = viewWillUnmount;
+    //exports.viewDidUnmount = viewDidUnmount;
   });;(function () {
 
   var _browserInfo = require('Nudoru.Browser.BrowserInfo');
