@@ -3,8 +3,49 @@ BEGIN Templates for Sub Views
 -->
 
 <script id="template__default" type="text/template">
-    <div class="padded">
-        <p>Default subview template.</p>
+    <div class="grid__12-container">
+        <div class="grid__row padding-bottom-double">
+            <div class="grid__col-8">
+                <div class="panel panel__border panel__shadow">
+                    <div class="panel__header">
+                        <h1>Discussion</h1>
+                    </div>
+                    <ul class="list-plain">
+                        <li>Message</li>
+                        <li>Message</li>
+                        <li>Message</li>
+                        <li>Message</li>
+                        <li>Message</li>
+                    </ul>
+                    <div class="panel__footer">
+                        <input id="message-input" type="text" placeholder="What say ye?">
+                        <button class="button-success button__icon-left"><i class="fa fa-comment"></i>Chat It!</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="grid__col-4">
+                <div class="panel panel__border panel__shadow">
+                    <div class="panel__header">
+                        <h1>Connected Users</h1>
+                    </div>
+                    <ul class="list-plain">
+                        <li>User</li>
+                        <li>User</li>
+                        <li>User</li>
+                        <li>User</li>
+                    </ul>
+                </div>
+                <div class="panel panel__border panel__shadow">
+                    <div class="panel__header">
+                        <h1>Settings</h1>
+                    </div>
+                    <label for="nick-input">Your nick
+                        <input id="nick-input" type="text" placeholder="Nick">
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
 </script>
 
@@ -21,13 +62,13 @@ BEGIN Templates for Application Structure
         <div id="app__contents">
             <header class="app__header">
                 <div class="app__column">
-                    <div class="app__header-logo"><i class="fa fa-cogs"></i></div>
-                    <h1>Appliation</h1>
+                    <div class="app__header-logo"><i class="fa fa-comments-o"></i></div>
+                    <h1>chattr.</h1>
                 </div>
             </header>
             <section class="app__hero">
                 <div class="app__column">
-                    <h2>App starting template.</h2>
+                    <h2>Chitty chat, chat!</h2>
                 </div>
             </section>
             <section class="app__content">
