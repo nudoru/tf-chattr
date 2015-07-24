@@ -1,16 +1,26 @@
 define('APP.View.MessageList',
   function (require, module, exports) {
 
+    var _self;
+
     function initialize(initObj) {
       if(!this.isInitialized()) {
+        _self = this;
         // associate with stores
-
+        APP.registerViewForModelChanges('MessagesCollection', this.getID());
         this.initializeSubView(initObj);
       }
     }
 
     function viewWillUpdate() {
       // Update state from stores
+      updateState();
+    }
+
+    function updateState() {
+      var obj = Object.create(null);
+      // build it
+      _self.setState(obj);
     }
 
     // Example of custom render

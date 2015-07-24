@@ -1,16 +1,30 @@
 define('APP.View.UserList',
   function (require, module, exports) {
 
+    var _self;
+
     function initialize(initObj) {
       if(!this.isInitialized()) {
+        _self = this;
         // associate with stores
-        console.log('user list');
+        APP.registerViewForModelChanges('UsersCollection', this.getID());
         this.initializeSubView(initObj);
       }
     }
 
     function viewWillUpdate() {
       // Update state from stores
+      updateState();
+    }
+
+    function updateState() {
+      var obj = Object.create(null);
+      APP.model().getUsersCollection().forEach(function(user) {
+        var username = user.get('username');
+        obj[username] = username;
+      });
+
+      _self.setState(obj);
     }
 
     // Example of custom render

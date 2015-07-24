@@ -39,6 +39,7 @@ define('APP.Application',
         _appEvents  = require('Nori.Events.AppEventCreator'),
         _usersCollection,
         _messagesCollection,
+        _messageID = 1,
         _dispatcher = require('Nori.Utils.Dispatcher');
 
     //----------------------------------------------------------------------------
@@ -51,19 +52,34 @@ define('APP.Application',
       _usersCollection = _self.createMapCollection({id:'UsersCollection'});
       _messagesCollection = _self.createMapCollection({id:'MessagesCollection'});
 
+      addUser('Sophie');
+      addUser('Gabe');
+      addUser('Casey');
+      addUser('Matt');
+
       _appEvents.applicationModelInitialized();
     }
 
-    function addUser(username) {
+    function getUsersCollection() {
+      return _usersCollection;
+    }
 
+    function getMessagesCollection() {
+      return _messagesCollection;
+    }
+
+    // escape user name
+    function addUser(username) {
+      _usersCollection.add(_self.createMap({id: username, store: {username: username}}));
     }
 
     function removeUser(username) {
-
+      _usersCollection.remove(username);
     }
 
+    // escape user name and message
     function addMessage(username,message) {
-
+      _messagesCollection.add(_self.createMap({id: _messageID++, store: {username: username, message: message}}));
     }
 
     //----------------------------------------------------------------------------
@@ -84,6 +100,8 @@ define('APP.Application',
     //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
+    exports.getUsersCollection = getUsersCollection;
+    exports.getMessagesCollection = getMessagesCollection;
     exports.addUser = addUser;
     exports.removeUser = removeUser;
     exports.addMessage = addMessage;
@@ -163,8 +181,11 @@ define('APP.Application',
       });
       _self.delegateEvents();
 
-      _self.mapView('user-list', 'APP.View.UserList', false, '#users')
-      _self.mapView('message-list', 'APP.View.MessageList', false, '#message')
+      _self.mapView('user-list', 'APP.View.UserList', false, '#users');
+      _self.mapView('message-list', 'APP.View.MessageList', false, '#message');
+
+      _self.showView('user-list');
+      _self.showView('message-list');
     }
 
     function handleNickInputChange(e) {
@@ -338,16 +359,26 @@ define('APP.Application',
   });;define('APP.View.MessageList',
   function (require, module, exports) {
 
+    var _self;
+
     function initialize(initObj) {
       if(!this.isInitialized()) {
+        _self = this;
         // associate with stores
-
+        APP.registerViewForModelChanges('MessagesCollection', this.getID());
         this.initializeSubView(initObj);
       }
     }
 
     function viewWillUpdate() {
       // Update state from stores
+      updateState();
+    }
+
+    function updateState() {
+      var obj = Object.create(null);
+      // build it
+      _self.setState(obj);
     }
 
     // Example of custom render
@@ -379,16 +410,30 @@ define('APP.Application',
   });;define('APP.View.UserList',
   function (require, module, exports) {
 
+    var _self;
+
     function initialize(initObj) {
       if(!this.isInitialized()) {
+        _self = this;
         // associate with stores
-        console.log('user list');
+        APP.registerViewForModelChanges('UsersCollection', this.getID());
         this.initializeSubView(initObj);
       }
     }
 
     function viewWillUpdate() {
       // Update state from stores
+      updateState();
+    }
+
+    function updateState() {
+      var obj = Object.create(null);
+      APP.model().getUsersCollection().forEach(function(user) {
+        var username = user.get('username');
+        obj[username] = username;
+      });
+
+      _self.setState(obj);
     }
 
     // Example of custom render

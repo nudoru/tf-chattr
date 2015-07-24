@@ -32,8 +32,11 @@ define('APP.View.AppView',
       });
       _self.delegateEvents();
 
-      _self.mapView('user-list', 'APP.View.UserList', false, '#users')
-      _self.mapView('message-list', 'APP.View.MessageList', false, '#message')
+      _self.mapView('user-list', 'APP.View.UserList', false, '#users');
+      _self.mapView('message-list', 'APP.View.MessageList', false, '#message');
+
+      _self.showView('user-list');
+      _self.showView('message-list');
     }
 
     function handleNickInputChange(e) {
