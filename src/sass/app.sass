@@ -156,6 +156,13 @@ body
 
 #users__list
   @extend .list-plain
+  li
+    color: $dark-blue
+    font-family: $font-header
+
+.users__list-icon
+  margin-right: $base-line-height
+  color: $light-blue
 
 #message
   height: 500px
@@ -176,7 +183,6 @@ body
       margin-right: $base-line-height
       &::after
         content: ':'
-
 
 #nick-input
   width: 100%

@@ -5,6 +5,7 @@ define('APP.View.AppView',
         _appEvents = require('Nori.Events.AppEventCreator'),
         _dispatcher            = require('Nori.Utils.Dispatcher'),
         _appEventConstants     = require('Nori.Events.AppEventConstants'),
+        _chattrEvents         = require('App.Events.EventCreator'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     function initialize() {
@@ -16,11 +17,6 @@ define('APP.View.AppView',
       configureApplicationViewEvents();
 
       APP.mapRouteView('/', 'default', 'APP.View.AppSubView');
-
-      // For testing
-      APP.mapRouteView('/styles', 'debug-styletest', 'APP.View.AppSubView');
-      APP.mapRouteView('/controls', 'debug-controls', 'APP.View.AppSubView');
-      APP.mapRouteView('/comps', 'debug-components', 'APP.View.DebugControlsTestingSubView');
 
       _appEvents.applicationViewInitialized();
     }
@@ -40,11 +36,24 @@ define('APP.View.AppView',
     }
 
     function handleNickInputChange(e) {
-      console.log('nickinput', e.target.value);
+      _chattrEvents.updateNick(e.target.value);
     }
 
     function handleMessageInputChange(e) {
-      console.log('mesageinput', e.target.value);
+      _chattrEvents.publishMessage(getMyNick(), getMyMessageInput());
+      clearMyMessageInput();
+    }
+
+    function getMyNick() {
+      return document.getElementById('nick-input').value;
+    }
+
+    function getMyMessageInput() {
+      return document.getElementById('message-input').value;
+    }
+
+    function clearMyMessageInput() {
+      return document.getElementById('message-input').value = '';
     }
 
     function configureApplicationViewEvents() {

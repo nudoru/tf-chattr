@@ -6,47 +6,35 @@ define('APP.View.MessageList',
     function initialize(initObj) {
       if(!this.isInitialized()) {
         _self = this;
-        // associate with stores
-        APP.registerViewForModelChanges('MessagesCollection', this.getID());
         this.initializeSubView(initObj);
+        APP.registerViewForModelChanges('MessagesCollection', this.getID());
       }
     }
 
     function viewWillUpdate() {
-      // Update state from stores
-      updateState();
-    }
-
-    function updateState() {
       var obj = Object.create(null);
-      // build it
+
+      obj.messages =  [];
+
+      APP.model().getMessagesCollection().forEach(function(message) {
+        obj.messages.push({
+          username: message.get('username'),
+          content: message.get('content')
+        });
+      });
+
       _self.setState(obj);
     }
 
-    // Example of custom render
-    //function render() {
-    //  this.viewWillRender();
-    //  this.setHTML(this.getTemplate()(this.getState()));
-    //  // created in mount this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
-    //  this.viewDidRender();
-    //}
-
-    //function viewDidMount() {
-    //  // good place to assign events or post render
-    //}
-    //
-    //function viewWillUnmount() {
-    //  // remove events
-    //}
+    /**
+     * After it's rendered to the screen, scroll to the bottom
+     */
+    function viewDidMount() {
+      var container = _self.getDOMElement().parentNode;
+      container.scrollTop = container.scrollHeight;
+    }
 
     exports.initialize = initialize;
     exports.viewWillUpdate = viewWillUpdate;
-
-    //exports.viewDidUpdate = viewDidUpdate;
-    //exports.viewWillRender = viewWillRender;
-    //exports.viewDidRender = viewDidRender;
-    //exports.viewWillMount = viewWillMount;
-    //exports.viewDidMount = viewDidMount;
-    //exports.viewWillUnmount = viewWillUnmount;
-    //exports.viewDidUnmount = viewDidUnmount;
+    exports.viewDidMount = viewDidMount;
   });

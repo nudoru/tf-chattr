@@ -6,6 +6,7 @@ define('APP.Model.AppModel',
         _usersCollection,
         _messagesCollection,
         _messageID = 1,
+        _chattrEventConstants = require('App.Events.EventConstants'),
         _dispatcher = require('Nori.Utils.Dispatcher');
 
     //----------------------------------------------------------------------------
@@ -15,6 +16,8 @@ define('APP.Model.AppModel',
     function initialize() {
       _self = this;
 
+      _dispatcher.subscribe(_chattrEventConstants.PUBLISH_MESSAGE, handleMessagePublished);
+
       _usersCollection = _self.createMapCollection({id:'UsersCollection'});
       _messagesCollection = _self.createMapCollection({id:'MessagesCollection'});
 
@@ -22,6 +25,31 @@ define('APP.Model.AppModel',
       addUser('Gabe');
       addUser('Casey');
       addUser('Matt');
+
+      addMessage('System','Welcome to Chattr! Start chatting...');
+      //addMessage('Casey','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Casey','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Matt','Testing!');
+      //addMessage('Matt','Testing!');
 
       _appEvents.applicationModelInitialized();
     }
@@ -45,7 +73,12 @@ define('APP.Model.AppModel',
 
     // escape user name and message
     function addMessage(username,message) {
-      _messagesCollection.add(_self.createMap({id: _messageID++, store: {username: username, message: message}}));
+      username = username || 'Unknown';
+      _messagesCollection.add(_self.createMap({id: _messageID++, store: {username: username, content: message}}));
+    }
+
+    function handleMessagePublished(payload) {
+      addMessage(payload.payload.username, payload.payload.message);
     }
 
     //----------------------------------------------------------------------------

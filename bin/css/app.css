@@ -4166,6 +4166,16 @@ body {
   box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
 }
 
+#users__list li {
+  color: #005eb8;
+  font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.users__list-icon {
+  margin-right: 0.618rem;
+  color: #00a9e0;
+}
+
 #message {
   height: 500px;
   overflow-y: scroll;
