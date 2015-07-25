@@ -181,11 +181,11 @@ define('APP.Application',
       });
       _self.delegateEvents();
 
-      _self.mapView('user-list', 'APP.View.UserList', false, '#users');
-      _self.mapView('message-list', 'APP.View.MessageList', false, '#message');
+      _self.createComponent('user-list', 'APP.View.UserList', '#users');
+      _self.createComponent('message-list', 'APP.View.MessageList', '#message');
 
-      _self.showView('user-list');
-      _self.showView('message-list');
+      _self.renderComponent('user-list');
+      _self.renderComponent('message-list');
     }
 
     function handleNickInputChange(e) {
