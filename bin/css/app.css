@@ -4161,6 +4161,13 @@ body {
   color: #00a9e0;
 }
 
+.users__list-me {
+  color: #3b8e43 !important;
+}
+.users__list-me i.fa {
+  color: #3b8e43 !important;
+}
+
 #message {
   height: 500px;
   overflow-y: scroll;
@@ -4181,6 +4188,14 @@ body {
 }
 #message__list li em::after {
   content: ":";
+}
+
+.message__list-display-system {
+  color: #968c83 !important;
+}
+
+.message__list-display-me {
+  color: #3b8e43 !important;
 }
 
 #nick-input {

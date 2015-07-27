@@ -17,9 +17,18 @@ define('APP.View.MessageList',
       obj.messages =  [];
 
       APP.model().getMessagesCollection().forEach(function(message) {
+        var displayClass = '';
+
+        if(message.get('username') === 'System') {
+          displayClass = 'message__list-display-system';
+        } else if(message.get('username') === APP.model().getMyNick()) {
+          displayClass = 'message__list-display-me';
+        }
+
         obj.messages.push({
           username: message.get('username'),
-          content: message.get('content')
+          content: message.get('content'),
+          display: displayClass
         });
       });
 

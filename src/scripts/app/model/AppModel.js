@@ -43,6 +43,10 @@ define('APP.Model.AppModel',
       return _myNick;
     }
 
+    function setMyNick(nick) {
+      _myNick = nick;
+    }
+
     function setUsers(users) {
       _usersCollection.removeAll();
       users.forEach(function (user) {
@@ -83,7 +87,6 @@ define('APP.Model.AppModel',
     }
 
     function handleNickChange(payload) {
-      console.log('nick change:', payload.payload);
       _myNick = payload.payload.nick;
     }
 
@@ -98,4 +101,6 @@ define('APP.Model.AppModel',
     exports.addUser               = addUser;
     exports.removeUser            = removeUser;
     exports.addMessage            = addMessage;
+    exports.getMyNick             = getMyNick;
+    exports.setMyNick             = setMyNick;
   });

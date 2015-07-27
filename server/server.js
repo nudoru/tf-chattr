@@ -1,15 +1,15 @@
-var socket_io = require('socket.io');
-var http      = require('http');
-var express   = require('express');
+var socket_io        = require('socket.io'),
+    http             = require('http'),
+    express          = require('express'),
+    app              = express(),
+    server, io,
+    connectionsMap   = Object.create(null),
+    connectionsCount = 0;
 
-var app = express();
 app.use(express.static('bin'));
 
-var server = http.Server(app);
-var io     = socket_io(server);
-
-var connectionsMap   = Object.create(null),
-    connectionsCount = 0;
+server = http.Server(app);
+io     = socket_io(server);
 
 function addConnectionToMap(id) {
   connectionsMap[id] = {
@@ -40,21 +40,14 @@ io.on('connection', function (socket) {
 
   addConnectionToMap(id);
 
-  socket.emit('userupdate', getActiveUsersList());
+  socket.emit('assignnick',getConnectionsMapForID(id).nick);
 
-  socket.emit('message', {
-    username: 'System',
-    message : 'Welcome to Chattr!'
-  });
-
-  socket.broadcast.emit('message', {
-    username: 'System',
-    message : getConnectionsMapForID(id).nick + ' has joined.'
-  });
+  sendSystemAnnouncement(getConnectionsMapForID(id).nick + ' has joined.');
+  sendUpdatedUsersList();
 
   socket.on('message', function (message) {
-    console.log(id, 'message:', message.username, message.message);
-    getConnectionsMapForID(id).messages.push(message.message);
+    //console.log(id, 'message:', message.username, message.message);
+    //getConnectionsMapForID(id).messages.push(message.message);
     socket.broadcast.emit('message', {
       username: getConnectionsMapForID(id).nick,
       message : message.message
@@ -62,26 +55,31 @@ io.on('connection', function (socket) {
   });
 
   socket.on('nickchange', function (nick) {
-    var oldnick                     = getConnectionsMapForID(id).nick
+    var oldnick                     = getConnectionsMapForID(id).nick;
     getConnectionsMapForID(id).nick = nick;
-    socket.emit('userupdate', getActiveUsersList());
-
-    socket.emit('message', {
-      username: 'System',
-      message : oldnick + ' changed nick to ' + nick + '.'
-    });
+    sendUpdatedUsersList();
+    sendSystemAnnouncement(oldnick + ' changed nick to ' + nick + '.');
   });
 
   socket.on('disconnect', function () {
     console.log('disconnect');
     getConnectionsMapForID(id).connected = false;
-    socket.emit('message', {
-      username: 'System',
-      message : getConnectionsMapForID(id).nick + ' has left.'
-    });
-    socket.emit('userupdate', getActiveUsersList());
+    sendSystemAnnouncement(getConnectionsMapForID(id).nick + ' has left.');
+    sendUpdatedUsersList();
     io.emit('user disconnected');
   });
+
+  function sendUpdatedUsersList() {
+    socket.emit('userupdate', getActiveUsersList());
+  }
+
+  function sendSystemAnnouncement(message) {
+    io.emit('message', {
+      username: 'System',
+      message : message
+    });
+  }
+
 });
 
 server.listen(8080);

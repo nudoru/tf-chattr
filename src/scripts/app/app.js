@@ -35,6 +35,7 @@ define('APP.Application',
       _socketIO = io();
       _socketIO.on('message', handleMessageReceived);
       _socketIO.on('userupdate', handleUserUpdate);
+      _socketIO.on('assignnick', handleAssignNick);
     }
 
     function handleMessagePublished(payload) {
@@ -57,6 +58,12 @@ define('APP.Application',
     function handleUserUpdate(users) {
       console.log('server user: ', users);
       _self.model().setUsers(users);
+    }
+
+    function handleAssignNick(nick) {
+      console.log('server assigned nick', nick);
+      _self.view().setMyNick(nick);
+      _self.model().setMyNick(nick);
     }
 
     //----------------------------------------------------------------------------

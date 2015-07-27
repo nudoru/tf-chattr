@@ -4,6 +4,7 @@ define('App.Events.EventConstants',
 
     _.merge(exports, objUtils.keyMirror({
       PUBLISH_MESSAGE: null,
-      NICK_UPDATE    : null
+      NICK_UPDATE    : null,
+      NICK_ASSIGNED  : null
     }));
   });

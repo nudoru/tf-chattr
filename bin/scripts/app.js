@@ -35,6 +35,7 @@ define('APP.Application',
       _socketIO = io();
       _socketIO.on('message', handleMessageReceived);
       _socketIO.on('userupdate', handleUserUpdate);
+      _socketIO.on('assignnick', handleAssignNick);
     }
 
     function handleMessagePublished(payload) {
@@ -59,6 +60,12 @@ define('APP.Application',
       _self.model().setUsers(users);
     }
 
+    function handleAssignNick(nick) {
+      console.log('server assigned nick', nick);
+      _self.view().setMyNick(nick);
+      _self.model().setMyNick(nick);
+    }
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -71,7 +78,8 @@ define('APP.Application',
 
     _.merge(exports, objUtils.keyMirror({
       PUBLISH_MESSAGE: null,
-      NICK_UPDATE    : null
+      NICK_UPDATE    : null,
+      NICK_ASSIGNED  : null
     }));
   });;define('App.Events.EventCreator',
   function (require, module, exports) {
@@ -143,6 +151,10 @@ define('APP.Application',
       return _myNick;
     }
 
+    function setMyNick(nick) {
+      _myNick = nick;
+    }
+
     function setUsers(users) {
       _usersCollection.removeAll();
       users.forEach(function (user) {
@@ -183,7 +195,6 @@ define('APP.Application',
     }
 
     function handleNickChange(payload) {
-      console.log('nick change:', payload.payload);
       _myNick = payload.payload.nick;
     }
 
@@ -198,6 +209,8 @@ define('APP.Application',
     exports.addUser               = addUser;
     exports.removeUser            = removeUser;
     exports.addMessage            = addMessage;
+    exports.getMyNick             = getMyNick;
+    exports.setMyNick             = setMyNick;
   });
 ;define('APP.View.AppSubView',
   function (require, module, exports) {
@@ -244,12 +257,11 @@ define('APP.Application',
   function (require, module, exports) {
 
     var _self,
-        _appEvents = require('Nori.Events.AppEventCreator'),
-        _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _appEventConstants     = require('Nori.Events.AppEventConstants'),
-        _appEvents     = require('Nori.Events.AppEventCreator'),
-        _chattrEvents         = require('App.Events.EventCreator'),
-        _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
+        _appEvents         = require('Nori.Events.AppEventCreator'),
+        _dispatcher        = require('Nori.Utils.Dispatcher'),
+        _appEventConstants = require('Nori.Events.AppEventConstants'),
+        _appEvents         = require('Nori.Events.AppEventCreator'),
+        _chattrEvents      = require('App.Events.EventCreator');
 
     function initialize() {
       _self = this;
@@ -266,14 +278,16 @@ define('APP.Application',
 
     function render() {
       _self.setEvents({
-        'change #nick-input'   : handleNickInputChange,
-        'change #message-input': handleMessageInputChange
+        'change #nick-input'    : handleNickInputChange,
+        'change #message-input' : handleMessageInputChange,
+        'focus #message-input'  : handleMessageInputFocus,
+        'blur #message-input'   : handleMessageInputBlur,
+        'keydown #message-input': handleMessageInputKeyPress
       });
       _self.delegateEvents();
 
       _self.createComponent('user-list', 'APP.View.UserList', '#users');
       _self.createComponent('message-list', 'APP.View.MessageList', '#message');
-
       _self.renderComponent('user-list');
       _self.renderComponent('message-list');
     }
@@ -282,7 +296,20 @@ define('APP.Application',
       _chattrEvents.updateNick(e.target.value);
     }
 
+    function handleMessageInputFocus(e) {
+      console.log('input focus');
+    }
+
+    function handleMessageInputBlur(e) {
+      console.log('input blur');
+    }
+
+    function handleMessageInputKeyPress(e) {
+      console.log('keying');
+    }
+
     function handleMessageInputChange(e) {
+      // Errors after this, can't send new messages
       //if(getMyNick() === '') {
       //  _self.alert('Set a nick before posting');
       //  return;
@@ -293,6 +320,10 @@ define('APP.Application',
 
     function getMyNick() {
       return document.getElementById('nick-input').value;
+    }
+
+    function setMyNick(nick) {
+      document.getElementById('nick-input').value = nick;
     }
 
     function getMyMessageInput() {
@@ -314,6 +345,7 @@ define('APP.Application',
     }
 
     exports.initialize = initialize;
+    exports.setMyNick  = setMyNick;
     exports.render     = render;
   });;define('APP.View.MessageList',
   function (require, module, exports) {
@@ -334,9 +366,18 @@ define('APP.Application',
       obj.messages =  [];
 
       APP.model().getMessagesCollection().forEach(function(message) {
+        var displayClass = '';
+
+        if(message.get('username') === 'System') {
+          displayClass = 'message__list-display-system';
+        } else if(message.get('username') === APP.model().getMyNick()) {
+          displayClass = 'message__list-display-me';
+        }
+
         obj.messages.push({
           username: message.get('username'),
-          content: message.get('content')
+          content: message.get('content'),
+          display: displayClass
         });
       });
 
@@ -374,7 +415,10 @@ define('APP.Application',
       obj.users =  [];
 
       APP.model().getUsersCollection().forEach(function(user) {
-        obj.users.push(user.get('username'));
+        obj.users.push({
+          username: user.get('username'),
+          display: APP.model().getMyNick() === user.get('username') ? 'users__list-me' : ''
+        });
       });
       _self.setState(obj);
     }
