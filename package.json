@@ -1,10 +1,9 @@
 {
   "name": "app-framework",
   "version": "0.0.1",
-  "description": "Nori Application Framework",
+  "description": "Tf-Chattr",
   "author": "Matt Perkins <matt@nudoru.com>",
   "license": "MIT",
-  "homepage": "bin/index.html",
   "main": "server/server.js",
   "repository": {
     "type": "git",
