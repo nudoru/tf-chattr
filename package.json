@@ -34,7 +34,8 @@
   "scripts": {
     "lint": "jshint src/scripts/nori/",
     "build": "grunt build --verbose",
-    "test": "mocha test/"
+    "test": "mocha test/",
+    "start": "node server/server.js"
   },
   "dependencies": {
     "express": "^4.13.1",
