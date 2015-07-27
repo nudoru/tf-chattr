@@ -51,6 +51,9 @@ define('APP.Model.AppModel',
     }
 
     function addUser(username) {
+      if(!username) {
+        return;
+      }
       _usersCollection.add(_self.createMap({
         id   : username,
         store: {username: username}

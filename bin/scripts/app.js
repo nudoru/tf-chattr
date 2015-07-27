@@ -151,6 +151,9 @@ define('APP.Application',
     }
 
     function addUser(username) {
+      if(!username) {
+        return;
+      }
       _usersCollection.add(_self.createMap({
         id   : username,
         store: {username: username}
@@ -244,6 +247,7 @@ define('APP.Application',
         _appEvents = require('Nori.Events.AppEventCreator'),
         _dispatcher            = require('Nori.Utils.Dispatcher'),
         _appEventConstants     = require('Nori.Events.AppEventConstants'),
+        _appEvents     = require('Nori.Events.AppEventCreator'),
         _chattrEvents         = require('App.Events.EventCreator'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
@@ -279,7 +283,10 @@ define('APP.Application',
     }
 
     function handleMessageInputChange(e) {
-      console.log('view, handleMessageInputChange');
+      //if(getMyNick() === '') {
+      //  _self.alert('Set a nick before posting');
+      //  return;
+      //}
       _chattrEvents.publishMessage(getMyNick(), getMyMessageInput());
       clearMyMessageInput();
     }

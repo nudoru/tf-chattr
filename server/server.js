@@ -68,13 +68,17 @@ io.on('connection', function (socket) {
 
     socket.emit('message', {
       username: 'System',
-      message : oldnick + '  changed nick to ' + nick + '.'
+      message : oldnick + ' changed nick to ' + nick + '.'
     });
   });
 
   socket.on('disconnect', function () {
     console.log('disconnect');
     getConnectionsMapForID(id).connected = false;
+    socket.emit('message', {
+      username: 'System',
+      message : getConnectionsMapForID(id).nick + ' has left.'
+    });
     socket.emit('userupdate', getActiveUsersList());
     io.emit('user disconnected');
   });
