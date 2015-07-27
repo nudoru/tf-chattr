@@ -18,6 +18,7 @@ define('APP.Application',
       this.initializeApplication({model: appModel, view: appView});
 
       _dispatcher.subscribe(_chattrEventConstants.PUBLISH_MESSAGE, handleMessagePublished);
+      _dispatcher.subscribe(_chattrEventConstants.NICK_UPDATE, handleNickChange);
 
       this.view().initialize();
       this.model().initialize();
@@ -33,9 +34,11 @@ define('APP.Application',
 
       _socketIO = io();
       _socketIO.on('message', handleMessageReceived);
+      _socketIO.on('userupdate', handleUserUpdate);
     }
 
     function handleMessagePublished(payload) {
+      console.log('controller, handleMessagePublished, socket EMITTING');
       _socketIO.emit('message', {
         username: payload.payload.username,
         message : payload.payload.message
@@ -43,10 +46,18 @@ define('APP.Application',
     }
 
     function handleMessageReceived(message) {
-      console.log('recieved:', message);
+      console.log('controller handleMessageRecieved:', message);
+      _self.model().addMessage(message.username, message.message);
     }
 
-    //_chattrEvents.publishMessage(getMyNick(), getMyMessageInput());
+    function handleNickChange(payload) {
+      _socketIO.emit('nickchange', payload.payload.nick);
+    }
+
+    function handleUserUpdate(users) {
+      console.log('server user: ', users);
+      _self.model().setUsers(users);
+    }
 
     //----------------------------------------------------------------------------
     //  API

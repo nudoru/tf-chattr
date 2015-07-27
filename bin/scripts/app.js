@@ -18,6 +18,7 @@ define('APP.Application',
       this.initializeApplication({model: appModel, view: appView});
 
       _dispatcher.subscribe(_chattrEventConstants.PUBLISH_MESSAGE, handleMessagePublished);
+      _dispatcher.subscribe(_chattrEventConstants.NICK_UPDATE, handleNickChange);
 
       this.view().initialize();
       this.model().initialize();
@@ -33,9 +34,11 @@ define('APP.Application',
 
       _socketIO = io();
       _socketIO.on('message', handleMessageReceived);
+      _socketIO.on('userupdate', handleUserUpdate);
     }
 
     function handleMessagePublished(payload) {
+      console.log('controller, handleMessagePublished, socket EMITTING');
       _socketIO.emit('message', {
         username: payload.payload.username,
         message : payload.payload.message
@@ -43,10 +46,18 @@ define('APP.Application',
     }
 
     function handleMessageReceived(message) {
-      console.log('recieved:', message);
+      console.log('controller handleMessageRecieved:', message);
+      _self.model().addMessage(message.username, message.message);
     }
 
-    //_chattrEvents.publishMessage(getMyNick(), getMyMessageInput());
+    function handleNickChange(payload) {
+      _socketIO.emit('nickchange', payload.payload.nick);
+    }
+
+    function handleUserUpdate(users) {
+      console.log('server user: ', users);
+      _self.model().setUsers(users);
+    }
 
     //----------------------------------------------------------------------------
     //  API
@@ -91,12 +102,13 @@ define('APP.Application',
   function (require, module, exports) {
 
     var _self,
-        _appEvents  = require('Nori.Events.AppEventCreator'),
+        _myNick,
+        _appEvents            = require('Nori.Events.AppEventCreator'),
         _usersCollection,
         _messagesCollection,
-        _messageID = 1,
+        _messageID            = 1,
         _chattrEventConstants = require('App.Events.EventConstants'),
-        _dispatcher = require('Nori.Utils.Dispatcher');
+        _dispatcher           = require('Nori.Utils.Dispatcher');
 
     //----------------------------------------------------------------------------
     //  Init
@@ -106,39 +118,15 @@ define('APP.Application',
       _self = this;
 
       _dispatcher.subscribe(_chattrEventConstants.PUBLISH_MESSAGE, handleMessagePublished);
+      _dispatcher.subscribe(_chattrEventConstants.NICK_UPDATE, handleNickChange);
 
-      _usersCollection = _self.createMapCollection({id:'UsersCollection'});
-      _messagesCollection = _self.createMapCollection({id:'MessagesCollection'});
+      _usersCollection    = _self.createMapCollection({id: 'UsersCollection'});
+      _messagesCollection = _self.createMapCollection({id: 'MessagesCollection'});
 
-      addUser('Sophie');
-      addUser('Gabe');
-      addUser('Casey');
-      addUser('Matt');
-
-      addMessage('System','Welcome to Chattr! Start chatting...');
-      //addMessage('Casey','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Casey','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Matt','Testing!');
-      //addMessage('Matt','Testing!');
+      //addUser('Sophie');
+      //addUser('Gabe');
+      //addUser('Casey');
+      //addUser('Matt');
 
       _appEvents.applicationModelInitialized();
     }
@@ -151,9 +139,22 @@ define('APP.Application',
       return _messagesCollection;
     }
 
-    // escape user name
+    function getMyNick() {
+      return _myNick;
+    }
+
+    function setUsers(users) {
+      _usersCollection.removeAll();
+      users.forEach(function (user) {
+        addUser(user);
+      });
+    }
+
     function addUser(username) {
-      _usersCollection.add(_self.createMap({id: username, store: {username: username}}));
+      _usersCollection.add(_self.createMap({
+        id   : username,
+        store: {username: username}
+      }));
     }
 
     function removeUser(username) {
@@ -161,38 +162,39 @@ define('APP.Application',
     }
 
     // escape user name and message
-    function addMessage(username,message) {
+    function addMessage(username, message) {
+      console.log('model, addMessage');
       username = username || 'Unknown';
-      _messagesCollection.add(_self.createMap({id: _messageID++, store: {username: username, content: message}}));
+      _messagesCollection.add(_self.createMap({
+        id   : _messageID++,
+        store: {
+          username: username,
+          content : message
+        }
+      }));
     }
 
     function handleMessagePublished(payload) {
+      console.log('model, handleMessagePublished');
       addMessage(payload.payload.username, payload.payload.message);
     }
 
-    //----------------------------------------------------------------------------
-    //  Utility
-    //----------------------------------------------------------------------------
-
-    /**
-     * Utility function
-     * @param obj
-     * @returns {*}
-     */
-    function getLocalStorageObject(obj) {
-      return localStorage[obj];
+    function handleNickChange(payload) {
+      console.log('nick change:', payload.payload);
+      _myNick = payload.payload.nick;
     }
 
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
-    exports.getUsersCollection = getUsersCollection;
+    exports.initialize            = initialize;
+    exports.getUsersCollection    = getUsersCollection;
     exports.getMessagesCollection = getMessagesCollection;
-    exports.addUser = addUser;
-    exports.removeUser = removeUser;
-    exports.addMessage = addMessage;
+    exports.setUsers              = setUsers;
+    exports.addUser               = addUser;
+    exports.removeUser            = removeUser;
+    exports.addMessage            = addMessage;
   });
 ;define('APP.View.AppSubView',
   function (require, module, exports) {
@@ -277,6 +279,7 @@ define('APP.Application',
     }
 
     function handleMessageInputChange(e) {
+      console.log('view, handleMessageInputChange');
       _chattrEvents.publishMessage(getMyNick(), getMyMessageInput());
       clearMyMessageInput();
     }
@@ -352,8 +355,9 @@ define('APP.Application',
     function initialize(initObj) {
       if(!this.isInitialized()) {
         _self = this;
-        APP.registerViewForModelChanges('UsersCollection', this.getID());
         this.initializeSubView(initObj);
+
+        APP.registerViewForModelChanges('UsersCollection', this.getID());
       }
     }
 

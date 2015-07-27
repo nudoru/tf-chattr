@@ -40,6 +40,7 @@ define('APP.View.AppView',
     }
 
     function handleMessageInputChange(e) {
+      console.log('view, handleMessageInputChange');
       _chattrEvents.publishMessage(getMyNick(), getMyMessageInput());
       clearMyMessageInput();
     }

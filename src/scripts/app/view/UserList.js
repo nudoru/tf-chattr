@@ -6,8 +6,9 @@ define('APP.View.UserList',
     function initialize(initObj) {
       if(!this.isInitialized()) {
         _self = this;
-        APP.registerViewForModelChanges('UsersCollection', this.getID());
         this.initializeSubView(initObj);
+
+        APP.registerViewForModelChanges('UsersCollection', this.getID());
       }
     }
 
