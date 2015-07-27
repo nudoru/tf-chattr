@@ -4,6 +4,8 @@
   "description": "Nori Application Framework",
   "author": "Matt Perkins <matt@nudoru.com>",
   "license": "MIT",
+  "homepage": "bin/index.html",
+  "main": "server/server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nudoru/App-Framework"
