@@ -56,7 +56,7 @@ BEGIN Templates for Sub Views
 <script id="template__message-list" type="text/template">
     <ul id="message__list">
     <% _.forEach(messages, function(message) { %>
-        <li class="<%= message.display %>"><em><%= message.username %></em><%= message.content %></li>
+        <li class="<%= message.display %>"><em><%= message.time %>, <%= message.username %></em><%= message.content %></li>
     <% }); %>
     </ul>
 </script>

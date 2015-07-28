@@ -2,6 +2,7 @@ var socket_io        = require('socket.io'),
     http             = require('http'),
     express          = require('express'),
     app              = express(),
+    moment          = require('moment'),
     server, io,
     connectionsMap   = Object.create(null),
     connectionsCount = 0;
@@ -10,6 +11,10 @@ app.use(express.static('bin'));
 
 server = http.Server(app);
 io     = socket_io(server);
+
+function prettyNow() {
+  return moment().format('h:mm a');
+}
 
 function addConnectionToMap(id) {
   connectionsMap[id] = {
@@ -39,7 +44,7 @@ io.on('connection', function (socket) {
   //var clientIp = socket.request.connection.remoteAddress
   //https://github.com/socketio/socket.io/issues/1387
 
-  console.log('Client connected', id);
+  console.log('Client connected', id, prettyNow());
 
   addConnectionToMap(id);
 
@@ -78,6 +83,7 @@ io.on('connection', function (socket) {
 
   function sendSystemAnnouncement(message) {
     io.emit('message', {
+      time: prettyNow(),
       username: 'System',
       message : message
     });

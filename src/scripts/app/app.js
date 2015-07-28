@@ -41,6 +41,7 @@ define('APP.Application',
     function handleMessagePublished(payload) {
       console.log('controller, handleMessagePublished, socket EMITTING');
       _socketIO.emit('message', {
+        time: _self.model().prettyNow(),
         username: payload.payload.username,
         message : payload.payload.message
       });

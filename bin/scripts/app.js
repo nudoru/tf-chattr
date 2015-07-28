@@ -41,6 +41,7 @@ define('APP.Application',
     function handleMessagePublished(payload) {
       console.log('controller, handleMessagePublished, socket EMITTING');
       _socketIO.emit('message', {
+        time: _self.model().prettyNow(),
         username: payload.payload.username,
         message : payload.payload.message
       });
@@ -183,6 +184,7 @@ define('APP.Application',
       _messagesCollection.add(_self.createMap({
         id   : _messageID++,
         store: {
+          time: prettyNow(),
           username: username,
           content : message
         }
@@ -198,6 +200,10 @@ define('APP.Application',
       _myNick = payload.payload.nick;
     }
 
+    function prettyNow() {
+      return moment().format('h:mm a');
+    }
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -211,6 +217,7 @@ define('APP.Application',
     exports.addMessage            = addMessage;
     exports.getMyNick             = getMyNick;
     exports.setMyNick             = setMyNick;
+    exports.prettyNow             = prettyNow;
   });
 ;define('APP.View.AppSubView',
   function (require, module, exports) {
@@ -353,7 +360,7 @@ define('APP.Application',
     var _self;
 
     function initialize(initObj) {
-      if(!this.isInitialized()) {
+      if (!this.isInitialized()) {
         _self = this;
         this.initializeSubView(initObj);
         APP.registerViewForModelChanges('MessagesCollection', this.getID());
@@ -363,21 +370,22 @@ define('APP.Application',
     function viewWillUpdate() {
       var obj = Object.create(null);
 
-      obj.messages =  [];
+      obj.messages = [];
 
-      APP.model().getMessagesCollection().forEach(function(message) {
+      APP.model().getMessagesCollection().forEach(function (message) {
         var displayClass = '';
 
-        if(message.get('username') === 'System') {
+        if (message.get('username') === 'System') {
           displayClass = 'message__list-display-system';
-        } else if(message.get('username') === APP.model().getMyNick()) {
+        } else if (message.get('username') === APP.model().getMyNick()) {
           displayClass = 'message__list-display-me';
         }
 
         obj.messages.push({
+          time    : message.get('time'),
           username: message.get('username'),
-          content: message.get('content'),
-          display: displayClass
+          content : message.get('content'),
+          display : displayClass
         });
       });
 
@@ -388,13 +396,13 @@ define('APP.Application',
      * After it's rendered to the screen, scroll to the bottom
      */
     function viewDidMount() {
-      var container = _self.getDOMElement().parentNode;
+      var container       = _self.getDOMElement().parentNode;
       container.scrollTop = container.scrollHeight;
     }
 
-    exports.initialize = initialize;
+    exports.initialize     = initialize;
     exports.viewWillUpdate = viewWillUpdate;
-    exports.viewDidMount = viewDidMount;
+    exports.viewDidMount   = viewDidMount;
   });;define('APP.View.UserList',
   function (require, module, exports) {
 

@@ -4,7 +4,7 @@ define('APP.View.MessageList',
     var _self;
 
     function initialize(initObj) {
-      if(!this.isInitialized()) {
+      if (!this.isInitialized()) {
         _self = this;
         this.initializeSubView(initObj);
         APP.registerViewForModelChanges('MessagesCollection', this.getID());
@@ -14,21 +14,22 @@ define('APP.View.MessageList',
     function viewWillUpdate() {
       var obj = Object.create(null);
 
-      obj.messages =  [];
+      obj.messages = [];
 
-      APP.model().getMessagesCollection().forEach(function(message) {
+      APP.model().getMessagesCollection().forEach(function (message) {
         var displayClass = '';
 
-        if(message.get('username') === 'System') {
+        if (message.get('username') === 'System') {
           displayClass = 'message__list-display-system';
-        } else if(message.get('username') === APP.model().getMyNick()) {
+        } else if (message.get('username') === APP.model().getMyNick()) {
           displayClass = 'message__list-display-me';
         }
 
         obj.messages.push({
+          time    : message.get('time'),
           username: message.get('username'),
-          content: message.get('content'),
-          display: displayClass
+          content : message.get('content'),
+          display : displayClass
         });
       });
 
@@ -39,11 +40,11 @@ define('APP.View.MessageList',
      * After it's rendered to the screen, scroll to the bottom
      */
     function viewDidMount() {
-      var container = _self.getDOMElement().parentNode;
+      var container       = _self.getDOMElement().parentNode;
       container.scrollTop = container.scrollHeight;
     }
 
-    exports.initialize = initialize;
+    exports.initialize     = initialize;
     exports.viewWillUpdate = viewWillUpdate;
-    exports.viewDidMount = viewDidMount;
+    exports.viewDidMount   = viewDidMount;
   });

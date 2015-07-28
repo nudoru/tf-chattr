@@ -75,6 +75,7 @@ define('APP.Model.AppModel',
       _messagesCollection.add(_self.createMap({
         id   : _messageID++,
         store: {
+          time: prettyNow(),
           username: username,
           content : message
         }
@@ -90,6 +91,10 @@ define('APP.Model.AppModel',
       _myNick = payload.payload.nick;
     }
 
+    function prettyNow() {
+      return moment().format('h:mm a');
+    }
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -103,4 +108,5 @@ define('APP.Model.AppModel',
     exports.addMessage            = addMessage;
     exports.getMyNick             = getMyNick;
     exports.setMyNick             = setMyNick;
+    exports.prettyNow             = prettyNow;
   });
