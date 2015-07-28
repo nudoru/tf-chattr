@@ -4219,11 +4219,15 @@ body {
 }
 
 #nick-input {
-  width: 100%;
+  width: 98%;
 }
 
 #message-input {
   position: relative;
   top: 5px;
-  width: 550px;
+  width: 70%;
+}
+
+.message-input-button {
+  width: 25%;
 }
