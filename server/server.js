@@ -36,6 +36,9 @@ function getActiveUsersList() {
 io.on('connection', function (socket) {
   var id = socket.id;
 
+  //var clientIp = socket.request.connection.remoteAddress
+  //https://github.com/socketio/socket.io/issues/1387
+
   console.log('Client connected', id);
 
   addConnectionToMap(id);
@@ -70,7 +73,7 @@ io.on('connection', function (socket) {
   });
 
   function sendUpdatedUsersList() {
-    socket.emit('userupdate', getActiveUsersList());
+    io.emit('userupdate', getActiveUsersList());
   }
 
   function sendSystemAnnouncement(message) {
