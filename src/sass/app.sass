@@ -148,11 +148,21 @@ body
     padding: 0
 
 .app__content
+  position: relative
   margin-top: -$base-line-height
-  margin-bottom: $triple-base-line-height
   .app__column
     background-color: #fff
     +shadow__panel-slight
+
+.app__content__full-height
+  position: absolute
+  margin-top: 0
+  top: 55px
+  right: 0
+  bottom: 15px
+  left: 0
+  .app__column
+    height: 100%
 
 #users__list
   @extend .list-plain
@@ -171,6 +181,12 @@ body
 #message
   height: 500px
   overflow-y: scroll
+
+.part__full-height
+  height: 100%
+
+.messagepanel__full-height
+  height: 100%
 
 #message__list
   @extend .list-plain

@@ -4143,12 +4143,24 @@ body {
 }
 
 .app__content {
+  position: relative;
   margin-top: -0.618rem;
-  margin-bottom: 1.854rem;
 }
 .app__content .app__column {
   background-color: #fff;
   box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
+}
+
+.app__content__full-height {
+  position: absolute;
+  margin-top: 0;
+  top: 55px;
+  right: 0;
+  bottom: 15px;
+  left: 0;
+}
+.app__content__full-height .app__column {
+  height: 100%;
 }
 
 #users__list li {
@@ -4171,6 +4183,14 @@ body {
 #message {
   height: 500px;
   overflow-y: scroll;
+}
+
+.part__full-height {
+  height: 100%;
+}
+
+.messagepanel__full-height {
+  height: 100%;
 }
 
 #message__list li {
