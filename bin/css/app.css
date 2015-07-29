@@ -2916,6 +2916,83 @@ hr {
   margin-left: 91.66667%;
 }
 
+.divcol__container {
+  display: table;
+  table-layout: fixed;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.divcol__half-left, .half-right, .divcol__one-third-left, .divcol__one-third-right, .divcol__two-thirds-left, .divcol__two-thirds-right, .divcol__one-fourth-left, .divcol__one-fourth-right, .divcol__three-fourths-left, .divcol__three-fourths-right, .divcol__one-sixth-left, .divcol__one-sixth-right, .divcol__one-eighth-left, .divcol__one-eighth-right {
+  display: table-cell;
+  position: relative;
+  overflow: hidden;
+  vertical-align: top;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.divcol__half-left {
+  width: 50%;
+}
+
+.half-right {
+  width: 50%;
+}
+
+.divcol__one-third-left {
+  width: 33.33333%;
+}
+
+.divcol__one-third-right {
+  width: 33.33333%;
+}
+
+.divcol__two-thirds-left {
+  width: 66.66667%;
+}
+
+.divcol__two-thirds-right {
+  width: 66.66667%;
+}
+
+.divcol__one-fourth-left {
+  width: 25%;
+}
+
+.divcol__one-fourth-right {
+  width: 25%;
+}
+
+.divcol__three-fourths-left {
+  width: 75%;
+}
+
+.divcol__three-fourths-right {
+  width: 75%;
+}
+
+.divcol__one-sixth-left {
+  width: 16.66666%;
+}
+
+.divcol__one-sixth-right {
+  width: 16.66666%;
+}
+
+.divcol__one-eighth-left {
+  width: 12.5%;
+}
+
+.divcol__one-eighth-right {
+  width: 12.5%;
+}
+
 .icon-left i.fa {
   margin-right: 0.618rem;
 }
@@ -4025,7 +4102,7 @@ tr.row-header-inline td {
 
 body {
   overflow: hidden;
-  background: url("../img/light_toast.png");
+  background-image: url("../img/ripples.jpg");
 }
 
 #app__container {
@@ -4156,10 +4233,14 @@ body {
   margin-top: 0;
   top: 55px;
   right: 0;
-  bottom: 15px;
+  bottom: 0;
   left: 0;
 }
 .app__content__full-height .app__column {
+  height: 100%;
+}
+
+#contents {
   height: 100%;
 }
 
@@ -4181,16 +4262,22 @@ body {
 }
 
 #message {
-  height: 500px;
+  position: absolute;
   overflow-y: scroll;
+  width: 98%;
+  top: 0;
+  bottom: 60px;
 }
 
 .part__full-height {
   height: 100%;
+  min-height: 100%;
 }
 
 .messagepanel__full-height {
-  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
 }
 
 #message__list li {
@@ -4208,6 +4295,16 @@ body {
 }
 #message__list li em::after {
   content: ":";
+}
+
+.message__input-container {
+  position: absolute;
+  bottom: 0;
+  overflow: hidden;
+  width: 98%;
+}
+.message__input-container button {
+  float: right;
 }
 
 .message__list-display-system {

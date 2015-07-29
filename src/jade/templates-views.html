@@ -3,43 +3,35 @@ BEGIN Templates for Sub Views
 -->
 
 <script id="template__default" type="text/template">
-    <div class="grid__12-container part__full-height">
-        <div class="grid__row part__full-height">
-            <div class="grid__col-9 part__full-height">
-                <div class="panel panel__border panel__shadow messagepanel__full-height">
-                    <div class="panel__header">
-                        <h1>Discussion</h1>
-                    </div>
-                    <div id="message">
-                        <ul id="message__list">
-                            <li><em>Username</em>Message</li>
-                            <li><em>Username</em>Message</li>
-                        </ul>
-                    </div>
-                    <div class="panel__footer">
-                        <input id="message-input" type="text" placeholder="Message">
-                        <button class="button-success button__icon-left message-input-button"><i class="fa fa-comment"></i>Chat It!</button>
-                    </div>
+    <div class="divcol__container">
+        <div class="divcol__three-fourths-left">
+            <div id="message">
+                <ul id="message__list">
+                    <li><em>Username</em>Message</li>
+                </ul>
+            </div>
+            <div class="message__input-container">
+                <input id="message-input" type="text" placeholder="Message">
+                <button class="button-success button__icon-left message-input-button"><i class="fa fa-comment"></i>Post</button>
+            </div>
+        </div>
+        <div class="divcol__one-fourth-right">
+            <div class="panel panel__border panel__shadow">
+                <div class="panel__header">
+                    <h1>Connected Users</h1>
+                </div>
+                <div id="users">
+                    <ul id="users__list">
+                        <li>User</li>
+                    </ul>
                 </div>
             </div>
-            <div class="grid__col-3">
-                <div class="panel panel__border panel__shadow">
-                    <div class="panel__header">
-                        <h1>Connected Users</h1>
-                    </div>
-                    <div id="users">
-                        <ul id="users__list">
-                            <li>User</li>
-                        </ul>
-                    </div>
+            <div class="panel panel__border panel__shadow">
+                <div class="panel__header">
+                    <h1>Settings</h1>
                 </div>
-                <div class="panel panel__border panel__shadow">
-                    <div class="panel__header">
-                        <h1>Settings</h1>
-                    </div>
-                    <p>Post as
-                    <input id="nick-input" type="text" placeholder="Your nick"></p>
-                </div>
+                <p>Post as
+                <input id="nick-input" type="text" placeholder="Your nick"></p>
             </div>
         </div>
     </div>

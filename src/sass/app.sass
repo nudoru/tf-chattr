@@ -38,7 +38,7 @@ $app-column-width: 95%
 
 body
   overflow: hidden
-  +light-texture
+  background-image: url('../img/ripples.jpg')
 
 #app__container
   position: fixed
@@ -159,11 +159,14 @@ body
   margin-top: 0
   top: 55px
   right: 0
-  bottom: 15px
+  bottom: 0
   left: 0
   .app__column
     height: 100%
 
+#contents
+  height: 100%
+  
 #users__list
   @extend .list-plain
   li
@@ -178,15 +181,22 @@ body
   color: $dark-green !important
   i.fa
     color: $dark-green !important
+    
 #message
-  height: 500px
+  position: absolute
   overflow-y: scroll
+  width: 98%
+  top: 0
+  bottom: 60px
 
 .part__full-height
   height: 100%
+  min-height: 100%
 
 .messagepanel__full-height
-  height: 100%
+  position: absolute
+  top: 0
+  bottom: 0
 
 #message__list
   @extend .list-plain
@@ -203,6 +213,15 @@ body
       margin-right: $base-line-height
       &::after
         content: ':'
+
+.message__input-container
+  position: absolute
+  bottom: 0
+  overflow: hidden
+  width: 98%
+  button
+    float: right
+
 
 .message__list-display-system
   color: $color-base-light !important
