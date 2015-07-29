@@ -200,17 +200,24 @@ body
 
 #message__list
   @extend .list-plain
+  overflow: hidden
   li
-    color: $dark-blue
+    width: 80%
+    background-color: $light-blue
+    color: rgb(255,255,255)
+    text-shadow: 0 1px 0 $dark-blue
+    border-radius: 10px
+    padding: $base-line-height
+    margin: 0
     margin-bottom: $base-line-height
-    padding-bottom: $base-line-height
-    border-bottom: 1px solid rgba(0,0,0,.05)
+    box-shadow: 1px 2px 2px rgba(0,0,0,.15), inset 1px 1px 0 rgba(255,255,255,.3)
     em
       font-family: $font-header
       font-style: normal
       font-weight: 300
-      color: $color-base-light
+      color: rgba(255,255,255,.75)
       margin-right: $base-line-height
+      text-shadow: none
       &::after
         content: ':'
 
@@ -223,11 +230,22 @@ body
     float: right
 
 
-.message__list-display-system
-  color: $color-base-light !important
+#message__list li.message__list-display-system
+  width: 100%
+  background-color: #fff
+  color: $color-base-dark
+  border-radius: 0
+  padding: 0
+  margin-bottom: $base-line-height
+  text-shadow: none
+  box-shadow: none
+  em
+    color: $color-base-light
 
-.message__list-display-me
-  color: $dark-green !important
+#message__list li.message__list-display-me
+  margin-left: 20%
+  background-color: $light-green
+  text-shadow: 0 1px 0 $dark-green
 
 #nick-input
   width: 98%
