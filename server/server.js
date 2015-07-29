@@ -39,23 +39,22 @@ function getActiveUsersList() {
 }
 
 io.on('connection', function (socket) {
-  var id = socket.id;
+  var id = socket.id,
+    ip = socket.request.connection.remoteAddress;
 
   //var clientIp = socket.request.connection.remoteAddress
   //https://github.com/socketio/socket.io/issues/1387
 
-  console.log('Client connected', id, prettyNow());
+  console.log('Client connected', ip, id, prettyNow());
 
   addConnectionToMap(id);
 
   socket.emit('assignnick',getConnectionsMapForID(id).nick);
 
-  sendSystemAnnouncement(getConnectionsMapForID(id).nick + ' has joined.');
+  sendSystemAnnouncement(getConnectionsMapForID(id).nick + ' ['+ip+'] has joined.');
   sendUpdatedUsersList();
 
   socket.on('message', function (message) {
-    //console.log(id, 'message:', message.username, message.message);
-    //getConnectionsMapForID(id).messages.push(message.message);
     socket.broadcast.emit('message', {
       username: getConnectionsMapForID(id).nick,
       message : message.message
