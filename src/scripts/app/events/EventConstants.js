@@ -3,8 +3,10 @@ define('App.Events.EventConstants',
     var objUtils = require('Nudoru.Core.ObjectUtils');
 
     _.merge(exports, objUtils.keyMirror({
-      PUBLISH_MESSAGE: null,
-      NICK_UPDATE    : null,
-      NICK_ASSIGNED  : null
+      PUBLISH_MESSAGE : null,
+      NICK_UPDATE     : null,
+      NICK_ASSIGNED   : null,
+      USER_STARTTYPING: null,
+      USER_ENDTYPING  : null
     }));
   });

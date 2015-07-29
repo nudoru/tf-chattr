@@ -181,7 +181,17 @@ body
   color: $dark-green !important
   i.fa
     color: $dark-green !important
-    
+
+.users__list-typing
+  &::after
+    content: '...'
+    background-color: $color-base-light
+    color: #fff
+    border-radius: 5px
+    padding: 0 5px
+    margin-left: $half-base-line-height
+    font-weight: 700
+
 #message
   position: absolute
   overflow-y: scroll

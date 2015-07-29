@@ -20,7 +20,9 @@ define('APP.View.UserList',
       APP.model().getUsersCollection().forEach(function(user) {
         obj.users.push({
           username: user.get('username'),
-          display: APP.model().getMyNick() === user.get('username') ? 'users__list-me' : ''
+          display: APP.model().getMyNick() === user.get('username') ? 'users__list-me' : '',
+          status: '',
+          typing: user.get('typing') ? 'users__list-typing' : ''
         });
       });
       _self.setState(obj);

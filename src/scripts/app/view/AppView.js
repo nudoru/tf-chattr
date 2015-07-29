@@ -42,11 +42,11 @@ define('APP.View.AppView',
     }
 
     function handleMessageInputFocus(e) {
-      console.log('input focus');
+      _chattrEvents.startTyping();
     }
 
     function handleMessageInputBlur(e) {
-      console.log('input blur');
+      _chattrEvents.endTyping();
     }
 
     function handleMessageInputKeyPress(e) {

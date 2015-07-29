@@ -23,4 +23,18 @@ define('App.Events.EventCreator',
       });
     };
 
+    exports.startTyping = function () {
+      _dispatcher.publish({
+        type   : _eventConstants.USER_STARTTYPING,
+        payload: {}
+      });
+    };
+
+    exports.endTyping = function () {
+      _dispatcher.publish({
+        type   : _eventConstants.USER_ENDTYPING,
+        payload: {}
+      });
+    };
+
   });

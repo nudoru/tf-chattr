@@ -19,6 +19,8 @@ define('APP.Application',
 
       _dispatcher.subscribe(_chattrEventConstants.PUBLISH_MESSAGE, handleMessagePublished);
       _dispatcher.subscribe(_chattrEventConstants.NICK_UPDATE, handleNickChange);
+      _dispatcher.subscribe(_chattrEventConstants.USER_STARTTYPING, handleStartTyping);
+      _dispatcher.subscribe(_chattrEventConstants.USER_ENDTYPING, handleEndTyping);
 
       this.view().initialize();
       this.model().initialize();
@@ -39,7 +41,6 @@ define('APP.Application',
     }
 
     function handleMessagePublished(payload) {
-      console.log('controller, handleMessagePublished, socket EMITTING');
       _socketIO.emit('message', {
         time: _self.model().prettyNow(),
         username: payload.payload.username,
@@ -48,7 +49,6 @@ define('APP.Application',
     }
 
     function handleMessageReceived(message) {
-      console.log('controller handleMessageRecieved:', message);
       _self.model().addMessage(message.username, message.message);
     }
 
@@ -57,14 +57,20 @@ define('APP.Application',
     }
 
     function handleUserUpdate(users) {
-      console.log('server user: ', users);
       _self.model().setUsers(users);
     }
 
     function handleAssignNick(nick) {
-      console.log('server assigned nick', nick);
       _self.view().setMyNick(nick);
       _self.model().setMyNick(nick);
+    }
+
+    function handleStartTyping() {
+      _socketIO.emit('typingstart');
+    }
+
+    function handleEndTyping() {
+      _socketIO.emit('typingend');
     }
 
     //----------------------------------------------------------------------------

@@ -49,18 +49,23 @@ define('APP.Model.AppModel',
 
     function setUsers(users) {
       _usersCollection.removeAll();
+
       users.forEach(function (user) {
         addUser(user);
       });
     }
 
-    function addUser(username) {
-      if(!username) {
+    function addUser(userObj) {
+      if (!userObj) {
         return;
       }
       _usersCollection.add(_self.createMap({
-        id   : username,
-        store: {username: username}
+        id   : userObj.id,
+        store: {
+          username: userObj.nick,
+          status  : userObj.status,
+          typing  : userObj.typing
+        }
       }));
     }
 
@@ -75,7 +80,7 @@ define('APP.Model.AppModel',
       _messagesCollection.add(_self.createMap({
         id   : _messageID++,
         store: {
-          time: prettyNow(),
+          time    : prettyNow(),
           username: username,
           content : message
         }

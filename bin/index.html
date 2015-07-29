@@ -108,7 +108,7 @@ BEGIN Templates for Sub Views
 <script id="template__user-list" type="text/template">
     <ul id="users__list">
     <% _.forEach(users, function(user) { %>
-        <li class="<%= user.display %>"><i class="fa fa-user users__list-icon"></i><%= user.username %></li>
+        <li class="<%= user.display %> <%= user.status %> <%= user.typing %>"><i class="fa fa-user users__list-icon"></i><%= user.username %></li>
     <% }); %>
     </ul>
 </script>

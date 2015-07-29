@@ -4261,6 +4261,16 @@ body {
   color: #3b8e43 !important;
 }
 
+.users__list-typing::after {
+  content: "...";
+  background-color: #968c83;
+  color: #fff;
+  border-radius: 5px;
+  padding: 0 5px;
+  margin-left: 0.309rem;
+  font-weight: 700;
+}
+
 #message {
   position: absolute;
   overflow-y: scroll;

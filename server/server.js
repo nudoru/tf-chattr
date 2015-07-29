@@ -2,7 +2,7 @@ var socket_io        = require('socket.io'),
     http             = require('http'),
     express          = require('express'),
     app              = express(),
-    moment          = require('moment'),
+    moment           = require('moment'),
     server, io,
     connectionsMap   = Object.create(null),
     connectionsCount = 0;
@@ -19,8 +19,11 @@ function prettyNow() {
 function addConnectionToMap(id) {
   connectionsMap[id] = {
     nick     : 'Anonymous' + connectionsCount++,
+    id       : id,
     connected: true,
-    messages : []
+    messages : [],
+    typing   : false,
+    status   : null
   };
 }
 
@@ -32,7 +35,12 @@ function getActiveUsersList() {
   var arry = [];
   for (var user in connectionsMap) {
     if (connectionsMap[user].connected === true) {
-      arry.push(connectionsMap[user].nick);
+      arry.push({
+        id    : connectionsMap[user].id,
+        nick  : connectionsMap[user].nick,
+        status: connectionsMap[user].status,
+        typing: connectionsMap[user].typing
+      });
     }
   }
   return arry;
@@ -40,7 +48,7 @@ function getActiveUsersList() {
 
 io.on('connection', function (socket) {
   var id = socket.id,
-    ip = socket.request.connection.remoteAddress;
+      ip = socket.request.connection.remoteAddress;
 
   //var clientIp = socket.request.connection.remoteAddress
   //https://github.com/socketio/socket.io/issues/1387
@@ -49,9 +57,9 @@ io.on('connection', function (socket) {
 
   addConnectionToMap(id);
 
-  socket.emit('assignnick',getConnectionsMapForID(id).nick);
+  socket.emit('assignnick', getConnectionsMapForID(id).nick);
 
-  sendSystemAnnouncement(getConnectionsMapForID(id).nick + ' ['+ip+'] has joined.');
+  sendSystemAnnouncement(getConnectionsMapForID(id).nick + ' has joined.');
   sendUpdatedUsersList();
 
   socket.on('message', function (message) {
@@ -68,6 +76,16 @@ io.on('connection', function (socket) {
     sendSystemAnnouncement(oldnick + ' changed nick to ' + nick + '.');
   });
 
+  socket.on('typingstart', function () {
+    getConnectionsMapForID(id).typing = true;
+    sendUpdatedUsersList();
+  });
+
+  socket.on('typingend', function () {
+    getConnectionsMapForID(id).typing = false;
+    sendUpdatedUsersList();
+  });
+
   socket.on('disconnect', function () {
     console.log('disconnect');
     getConnectionsMapForID(id).connected = false;
@@ -82,7 +100,7 @@ io.on('connection', function (socket) {
 
   function sendSystemAnnouncement(message) {
     io.emit('message', {
-      time: prettyNow(),
+      time    : prettyNow(),
       username: 'System',
       message : message
     });

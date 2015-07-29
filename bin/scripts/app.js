@@ -19,6 +19,8 @@ define('APP.Application',
 
       _dispatcher.subscribe(_chattrEventConstants.PUBLISH_MESSAGE, handleMessagePublished);
       _dispatcher.subscribe(_chattrEventConstants.NICK_UPDATE, handleNickChange);
+      _dispatcher.subscribe(_chattrEventConstants.USER_STARTTYPING, handleStartTyping);
+      _dispatcher.subscribe(_chattrEventConstants.USER_ENDTYPING, handleEndTyping);
 
       this.view().initialize();
       this.model().initialize();
@@ -39,7 +41,6 @@ define('APP.Application',
     }
 
     function handleMessagePublished(payload) {
-      console.log('controller, handleMessagePublished, socket EMITTING');
       _socketIO.emit('message', {
         time: _self.model().prettyNow(),
         username: payload.payload.username,
@@ -48,7 +49,6 @@ define('APP.Application',
     }
 
     function handleMessageReceived(message) {
-      console.log('controller handleMessageRecieved:', message);
       _self.model().addMessage(message.username, message.message);
     }
 
@@ -57,14 +57,20 @@ define('APP.Application',
     }
 
     function handleUserUpdate(users) {
-      console.log('server user: ', users);
       _self.model().setUsers(users);
     }
 
     function handleAssignNick(nick) {
-      console.log('server assigned nick', nick);
       _self.view().setMyNick(nick);
       _self.model().setMyNick(nick);
+    }
+
+    function handleStartTyping() {
+      _socketIO.emit('typingstart');
+    }
+
+    function handleEndTyping() {
+      _socketIO.emit('typingend');
     }
 
     //----------------------------------------------------------------------------
@@ -78,9 +84,11 @@ define('APP.Application',
     var objUtils = require('Nudoru.Core.ObjectUtils');
 
     _.merge(exports, objUtils.keyMirror({
-      PUBLISH_MESSAGE: null,
-      NICK_UPDATE    : null,
-      NICK_ASSIGNED  : null
+      PUBLISH_MESSAGE : null,
+      NICK_UPDATE     : null,
+      NICK_ASSIGNED   : null,
+      USER_STARTTYPING: null,
+      USER_ENDTYPING  : null
     }));
   });;define('App.Events.EventCreator',
   function (require, module, exports) {
@@ -104,6 +112,20 @@ define('APP.Application',
         payload: {
           nick: nick
         }
+      });
+    };
+
+    exports.startTyping = function () {
+      _dispatcher.publish({
+        type   : _eventConstants.USER_STARTTYPING,
+        payload: {}
+      });
+    };
+
+    exports.endTyping = function () {
+      _dispatcher.publish({
+        type   : _eventConstants.USER_ENDTYPING,
+        payload: {}
       });
     };
 
@@ -158,18 +180,23 @@ define('APP.Application',
 
     function setUsers(users) {
       _usersCollection.removeAll();
+
       users.forEach(function (user) {
         addUser(user);
       });
     }
 
-    function addUser(username) {
-      if(!username) {
+    function addUser(userObj) {
+      if (!userObj) {
         return;
       }
       _usersCollection.add(_self.createMap({
-        id   : username,
-        store: {username: username}
+        id   : userObj.id,
+        store: {
+          username: userObj.nick,
+          status  : userObj.status,
+          typing  : userObj.typing
+        }
       }));
     }
 
@@ -184,7 +211,7 @@ define('APP.Application',
       _messagesCollection.add(_self.createMap({
         id   : _messageID++,
         store: {
-          time: prettyNow(),
+          time    : prettyNow(),
           username: username,
           content : message
         }
@@ -304,11 +331,11 @@ define('APP.Application',
     }
 
     function handleMessageInputFocus(e) {
-      console.log('input focus');
+      _chattrEvents.startTyping();
     }
 
     function handleMessageInputBlur(e) {
-      console.log('input blur');
+      _chattrEvents.endTyping();
     }
 
     function handleMessageInputKeyPress(e) {
@@ -425,7 +452,9 @@ define('APP.Application',
       APP.model().getUsersCollection().forEach(function(user) {
         obj.users.push({
           username: user.get('username'),
-          display: APP.model().getMyNick() === user.get('username') ? 'users__list-me' : ''
+          display: APP.model().getMyNick() === user.get('username') ? 'users__list-me' : '',
+          status: '',
+          typing: user.get('typing') ? 'users__list-typing' : ''
         });
       });
       _self.setState(obj);
