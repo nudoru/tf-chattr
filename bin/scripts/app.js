@@ -1,7 +1,7 @@
 define('APP.Application',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _socketIO,
         _chattrEventConstants = require('App.Events.EventConstants'),
         _chattrEvents         = require('App.Events.EventCreator'),
@@ -10,7 +10,7 @@ define('APP.Application',
     function initialize() {
       var appModel, appView;
 
-      _self = this;
+      _this = this;
 
       appModel = this.createApplicationModel(require('APP.Model.AppModel'));
       appView  = this.createApplicationView(require('APP.View.AppView'));
@@ -42,14 +42,14 @@ define('APP.Application',
 
     function handleMessagePublished(payload) {
       _socketIO.emit('message', {
-        time: _self.model().prettyNow(),
+        time: _this.model().prettyNow(),
         username: payload.payload.username,
         message : payload.payload.message
       });
     }
 
     function handleMessageReceived(message) {
-      _self.model().addMessage(message.username, message.message);
+      _this.model().addMessage(message.username, message.message);
     }
 
     function handleNickChange(payload) {
@@ -57,12 +57,12 @@ define('APP.Application',
     }
 
     function handleUserUpdate(users) {
-      _self.model().setUsers(users);
+      _this.model().setUsers(users);
     }
 
     function handleAssignNick(nick) {
-      _self.view().setMyNick(nick);
-      _self.model().setMyNick(nick);
+      _this.view().setMyNick(nick);
+      _this.model().setMyNick(nick);
     }
 
     function handleStartTyping() {
@@ -132,7 +132,7 @@ define('APP.Application',
   });;define('APP.Model.AppModel',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _myNick,
         _appEvents            = require('Nori.Events.AppEventCreator'),
         _usersCollection,
@@ -146,13 +146,13 @@ define('APP.Application',
     //----------------------------------------------------------------------------
 
     function initialize() {
-      _self = this;
+      _this = this;
 
       _dispatcher.subscribe(_chattrEventConstants.PUBLISH_MESSAGE, handleMessagePublished);
       _dispatcher.subscribe(_chattrEventConstants.NICK_UPDATE, handleNickChange);
 
-      _usersCollection    = _self.createMapCollection({id: 'UsersCollection'});
-      _messagesCollection = _self.createMapCollection({id: 'MessagesCollection'});
+      _usersCollection    = _this.createMapCollection({id: 'UsersCollection'});
+      _messagesCollection = _this.createMapCollection({id: 'MessagesCollection'});
 
       //addUser('Sophie');
       //addUser('Gabe');
@@ -190,7 +190,7 @@ define('APP.Application',
       if (!userObj) {
         return;
       }
-      _usersCollection.add(_self.createMap({
+      _usersCollection.add(_this.createMap({
         id   : userObj.id,
         store: {
           username: userObj.nick,
@@ -208,7 +208,7 @@ define('APP.Application',
     function addMessage(username, message) {
       console.log('model, addMessage');
       username = username || 'Unknown';
-      _messagesCollection.add(_self.createMap({
+      _messagesCollection.add(_this.createMap({
         id   : _messageID++,
         store: {
           time    : prettyNow(),
@@ -290,7 +290,7 @@ define('APP.Application',
   });;define('APP.View.AppView',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _appEvents         = require('Nori.Events.AppEventCreator'),
         _dispatcher        = require('Nori.Utils.Dispatcher'),
         _appEventConstants = require('Nori.Events.AppEventConstants'),
@@ -298,10 +298,10 @@ define('APP.Application',
         _chattrEvents      = require('App.Events.EventCreator');
 
     function initialize() {
-      _self = this;
+      _this = this;
 
-      _self.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
-      _self.setRouteViewMountPoint('#contents');
+      _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
+      _this.setRouteViewMountPoint('#contents');
 
       configureApplicationViewEvents();
 
@@ -311,19 +311,19 @@ define('APP.Application',
     }
 
     function render() {
-      _self.setEvents({
+      _this.setEvents({
         'change #nick-input'    : handleNickInputChange,
         'change #message-input' : handleMessageInputChange,
         'focus #message-input'  : handleMessageInputFocus,
         'blur #message-input'   : handleMessageInputBlur,
         'keydown #message-input': handleMessageInputKeyPress
       });
-      _self.delegateEvents();
+      _this.delegateEvents();
 
-      _self.createComponent('user-list', 'APP.View.UserList', '#users');
-      _self.createComponent('message-list', 'APP.View.MessageList', '#message');
-      _self.renderComponent('user-list');
-      _self.renderComponent('message-list');
+      _this.createComponent('user-list', 'APP.View.UserList', '#users');
+      _this.createComponent('message-list', 'APP.View.MessageList', '#message');
+      _this.renderComponent('user-list');
+      _this.renderComponent('message-list');
     }
 
     function handleNickInputChange(e) {
@@ -345,7 +345,7 @@ define('APP.Application',
     function handleMessageInputChange(e) {
       // Errors after this, can't send new messages
       //if(getMyNick() === '') {
-      //  _self.alert('Set a nick before posting');
+      //  _this.alert('Set a nick before posting');
       //  return;
       //}
       _chattrEvents.publishMessage(getMyNick(), getMyMessageInput());
@@ -370,11 +370,11 @@ define('APP.Application',
 
     function configureApplicationViewEvents() {
       _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function (payload) {
-        _self.notify(payload.payload.message, payload.payload.title, payload.payload.type);
+        _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
       });
 
       _dispatcher.subscribe(_appEventConstants.ALERT_USER, function (payload) {
-        _self.alert(payload.payload.message, payload.payload.title);
+        _this.alert(payload.payload.message, payload.payload.title);
       });
     }
 
@@ -384,11 +384,11 @@ define('APP.Application',
   });;define('APP.View.MessageList',
   function (require, module, exports) {
 
-    var _self;
+    var _this;
 
     function initialize(initObj) {
       if (!this.isInitialized()) {
-        _self = this;
+        _this = this;
         this.initializeSubView(initObj);
         APP.registerViewForModelChanges('MessagesCollection', this.getID());
       }
@@ -416,14 +416,14 @@ define('APP.Application',
         });
       });
 
-      _self.setState(obj);
+      _this.setState(obj);
     }
 
     /**
      * After it's rendered to the screen, scroll to the bottom
      */
     function viewDidMount() {
-      var container       = _self.getDOMElement().parentNode;
+      var container       = _this.getDOMElement().parentNode;
       container.scrollTop = container.scrollHeight;
     }
 
@@ -433,11 +433,11 @@ define('APP.Application',
   });;define('APP.View.UserList',
   function (require, module, exports) {
 
-    var _self;
+    var _this;
 
     function initialize(initObj) {
       if(!this.isInitialized()) {
-        _self = this;
+        _this = this;
         this.initializeSubView(initObj);
 
         APP.registerViewForModelChanges('UsersCollection', this.getID());
@@ -457,7 +457,7 @@ define('APP.Application',
           typing: user.get('typing') ? 'users__list-typing' : ''
         });
       });
-      _self.setState(obj);
+      _this.setState(obj);
     }
 
     exports.initialize = initialize;

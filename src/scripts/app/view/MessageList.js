@@ -1,11 +1,11 @@
 define('APP.View.MessageList',
   function (require, module, exports) {
 
-    var _self;
+    var _this;
 
     function initialize(initObj) {
       if (!this.isInitialized()) {
-        _self = this;
+        _this = this;
         this.initializeSubView(initObj);
         APP.registerViewForModelChanges('MessagesCollection', this.getID());
       }
@@ -33,14 +33,14 @@ define('APP.View.MessageList',
         });
       });
 
-      _self.setState(obj);
+      _this.setState(obj);
     }
 
     /**
      * After it's rendered to the screen, scroll to the bottom
      */
     function viewDidMount() {
-      var container       = _self.getDOMElement().parentNode;
+      var container       = _this.getDOMElement().parentNode;
       container.scrollTop = container.scrollHeight;
     }
 

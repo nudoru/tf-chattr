@@ -1,7 +1,7 @@
 define('APP.Application',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _socketIO,
         _chattrEventConstants = require('App.Events.EventConstants'),
         _chattrEvents         = require('App.Events.EventCreator'),
@@ -10,7 +10,7 @@ define('APP.Application',
     function initialize() {
       var appModel, appView;
 
-      _self = this;
+      _this = this;
 
       appModel = this.createApplicationModel(require('APP.Model.AppModel'));
       appView  = this.createApplicationView(require('APP.View.AppView'));
@@ -42,14 +42,14 @@ define('APP.Application',
 
     function handleMessagePublished(payload) {
       _socketIO.emit('message', {
-        time: _self.model().prettyNow(),
+        time: _this.model().prettyNow(),
         username: payload.payload.username,
         message : payload.payload.message
       });
     }
 
     function handleMessageReceived(message) {
-      _self.model().addMessage(message.username, message.message);
+      _this.model().addMessage(message.username, message.message);
     }
 
     function handleNickChange(payload) {
@@ -57,12 +57,12 @@ define('APP.Application',
     }
 
     function handleUserUpdate(users) {
-      _self.model().setUsers(users);
+      _this.model().setUsers(users);
     }
 
     function handleAssignNick(nick) {
-      _self.view().setMyNick(nick);
-      _self.model().setMyNick(nick);
+      _this.view().setMyNick(nick);
+      _this.model().setMyNick(nick);
     }
 
     function handleStartTyping() {

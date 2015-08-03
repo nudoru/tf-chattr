@@ -1,7 +1,7 @@
 define('APP.Model.AppModel',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _myNick,
         _appEvents            = require('Nori.Events.AppEventCreator'),
         _usersCollection,
@@ -15,13 +15,13 @@ define('APP.Model.AppModel',
     //----------------------------------------------------------------------------
 
     function initialize() {
-      _self = this;
+      _this = this;
 
       _dispatcher.subscribe(_chattrEventConstants.PUBLISH_MESSAGE, handleMessagePublished);
       _dispatcher.subscribe(_chattrEventConstants.NICK_UPDATE, handleNickChange);
 
-      _usersCollection    = _self.createMapCollection({id: 'UsersCollection'});
-      _messagesCollection = _self.createMapCollection({id: 'MessagesCollection'});
+      _usersCollection    = _this.createMapCollection({id: 'UsersCollection'});
+      _messagesCollection = _this.createMapCollection({id: 'MessagesCollection'});
 
       //addUser('Sophie');
       //addUser('Gabe');
@@ -59,7 +59,7 @@ define('APP.Model.AppModel',
       if (!userObj) {
         return;
       }
-      _usersCollection.add(_self.createMap({
+      _usersCollection.add(_this.createMap({
         id   : userObj.id,
         store: {
           username: userObj.nick,
@@ -77,7 +77,7 @@ define('APP.Model.AppModel',
     function addMessage(username, message) {
       console.log('model, addMessage');
       username = username || 'Unknown';
-      _messagesCollection.add(_self.createMap({
+      _messagesCollection.add(_this.createMap({
         id   : _messageID++,
         store: {
           time    : prettyNow(),

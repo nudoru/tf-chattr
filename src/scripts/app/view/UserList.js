@@ -1,11 +1,11 @@
 define('APP.View.UserList',
   function (require, module, exports) {
 
-    var _self;
+    var _this;
 
     function initialize(initObj) {
       if(!this.isInitialized()) {
-        _self = this;
+        _this = this;
         this.initializeSubView(initObj);
 
         APP.registerViewForModelChanges('UsersCollection', this.getID());
@@ -25,7 +25,7 @@ define('APP.View.UserList',
           typing: user.get('typing') ? 'users__list-typing' : ''
         });
       });
-      _self.setState(obj);
+      _this.setState(obj);
     }
 
     exports.initialize = initialize;
